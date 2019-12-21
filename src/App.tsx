@@ -4,29 +4,39 @@ import { Size } from './types/Size';
 import { Cell } from './types/Cell';
 import styled from 'styled-components';
 
-const generateCells = (size: Size): Cell[][] => {
-  return [
-    [{ minesAround: 1 }, { minesAround: 11 }, { minesAround: 111 }],
-    [{ minesAround: 2 }, { minesAround: 22 }, { minesAround: 222 }],
-    // [{ minesCount: 1 }, { minesCount: 1 }, { minesCount: 1 }],
-  ]
+const arr = (length: number) => Array(length).fill(0);
+
+const generateCells = ({ rows, columns }: Size): Cell[][] => {
+  return arr(rows).map(r =>
+    arr(columns).map(c => {
+      const cell: Cell = {
+        minesAround: 0,
+        mine: false,
+        visible: false,
+      };
+      return cell;
+    }));
 }
 
 const getSizes = (): { [key: string]: Size } => ({
-  small: { width: 3, height: 3, mines: 0 },
-  medium: { width: 10, height: 10, mines: 0 },
+  small: { rows: 9, columns: 9, mines: 10 },
 });
 
 const App: React.FC = () => {
+  const size = getSizes().small;
   return (
     <AppStyled>
-      <Board board={generateCells(getSizes().small)} />
+      <Board board={generateCells(size)} size={size} />
     </AppStyled>
   );
 }
 
 const AppStyled = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100%;
+  width: 100%;
 `;
 
 export default App;

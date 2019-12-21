@@ -35,6 +35,11 @@ const Hidden = styled.div`
   width: 100%;
   height: 100%;
   background-color: #C0C0C0;
+  border-top: 4px solid #FFFFFF;
+  border-right: 4px solid #808080;
+  border-bottom: 4px solid #808080;
+  border-left: 4px solid #FFFFFF;
+  box-sizing: border-box;
 `;
 
 export default BoardCell;
