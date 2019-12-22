@@ -1,5 +1,5 @@
 import React from 'react';
-import BoardCell from './BoardCell';
+import BoardCell from './BoardCell/BoardCell';
 import { Cell } from '../types/Cell';
 import styled from 'styled-components';
 import { Size } from '../types/Size';
@@ -13,15 +13,19 @@ const Board: React.FC<Props> = ({ board, size }) => {
   const maxDimension = size.rows > size.columns ? size.rows : size.columns;
   return (
     <BoardStyled>
-      {board.map((row, ri) => (
+      {board.map((row, ri) =>
         <RowStyled key={ri}>
-          {row.map((cell, ci) => (
-            <ColumnStyled key={ci} maxDimension={maxDimension}>
-              <BoardCell cell={cell} />
-            </ColumnStyled>
-          ))}
+          {row.map((cell, ci) =>
+            <BoardCell
+              key={ci}
+              cell={cell}
+              maxDimension={maxDimension}
+              firstCol={ci === 0}
+              firstRow={ri === 0}
+            />
+          )}
         </RowStyled>
-      ))}
+      )}
     </BoardStyled>
   )
 }
@@ -45,12 +49,6 @@ const RowStyled = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-`;
-
-const ColumnStyled = styled.div<{ maxDimension: number }>`
-  display: flex;
-  width: ${p => `calc(90vmin / ${p.maxDimension})`};
-  height: ${p => `calc(90vmin / ${p.maxDimension})`};
 `;
 
 export default Board;
