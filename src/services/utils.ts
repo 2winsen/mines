@@ -9,3 +9,7 @@ export const rand = (min: number, max: number) => {
 export const indicesAsTuples = (indices: number[], cols: number): [number, number][] => {
   return indices.map(i => [Math.floor(i / cols), i % cols]);
 }
+
+export const tupleAsIndex = ([row, col]: [number, number], cols: number): number => {
+  return row * cols + col;
+}

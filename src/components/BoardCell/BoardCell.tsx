@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { Cell } from '../../types/Cell';
 import If from '../If';
@@ -10,11 +10,18 @@ interface Props {
   maxDimension: number;
   firstRow: boolean;
   firstCol: boolean;
+  onClick: (cell: Cell) => void;
+  onRightClick: (cell: Cell) => void;
 }
 
-const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow }) => {
+const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, onClick, onRightClick }) => {
+  const handleOnContextMenu = (e: MouseEvent) => {
+    e.preventDefault();
+    onRightClick(cell)
+  }
+
   return (
-    <CellStyled maxDimension={maxDimension}>
+    <CellStyled maxDimension={maxDimension} onClick={() => onClick(cell)} onContextMenu={handleOnContextMenu}>
       <If condition={!cell.visible}>
         <Hidden />
       </If>

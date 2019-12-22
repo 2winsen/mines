@@ -7,9 +7,11 @@ import { Size } from '../types/Size';
 interface Props {
   board: Cell[][];
   size: Size;
+  onCellClick: (cell: Cell) => void;
+  onCellRightClick: (cell: Cell) => void;
 }
 
-const Board: React.FC<Props> = ({ board, size }) => {
+const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick }) => {
   const maxDimension = size.rows > size.columns ? size.rows : size.columns;
   return (
     <BoardStyled>
@@ -22,6 +24,8 @@ const Board: React.FC<Props> = ({ board, size }) => {
               maxDimension={maxDimension}
               firstCol={ci === 0}
               firstRow={ri === 0}
+              onClick={onCellClick}
+              onRightClick={onCellRightClick}
             />
           )}
         </RowStyled>
