@@ -3,19 +3,65 @@ import Board from './components/Board';
 import { Size } from './types/Size';
 import { Cell } from './types/Cell';
 import styled from 'styled-components';
+import { rand, arr, indicesAsTuples } from './services/utils';
 
-const arr = (length: number) => Array(length).fill(0);
+const generateMines = (size: Size): [number, number][] => {
+  const mines = new Set<number>();
+  while (mines.size < size.mines) {
+    mines.add(rand(0, (size.rows * size.columns) - 1));
+  }
+  return indicesAsTuples(Array.from(mines), size.columns);
+};
 
-const generateCells = ({ rows, columns }: Size): Cell[][] => {
-  return arr(rows).map(r =>
-    arr(columns).map(c => {
+const generateEmptyBoardWithMines = (size: Size): Cell[][] => {
+  const mines = generateMines(size);
+  return arr(size.rows).map((_, ri) =>
+    arr(size.columns).map((_, ci) => {
       const cell: Cell = {
+        row: ri,
+        col: ci,
         minesAround: 0,
-        mine: false,
-        visible: false,
+        mine: Boolean(mines.find(([r, c]) => r === ri && c === ci)),
+        visible: true,
       };
       return cell;
     }));
+}
+
+const calculateMinesAround = (board: Cell[][], cell: Cell) => {
+  if (cell.mine) {
+    return 0;
+  }
+  let minesAround = 0;
+
+  const top = board[cell.row - 1] && board[cell.row - 1][cell.col];
+  const topRight = board[cell.row - 1] && board[cell.row - 1][cell.col + 1];
+  const right = board[cell.row] && board[cell.row][cell.col + 1];
+  const bottomRight = board[cell.row + 1] && board[cell.row + 1][cell.col + 1];
+  const bottom = board[cell.row + 1] && board[cell.row + 1][cell.col];
+  const bottomLeft = board[cell.row + 1] && board[cell.row + 1][cell.col - 1];
+  const left = board[cell.row] && board[cell.row][cell.col - 1];
+  const topLeft = board[cell.row - 1] && board[cell.row - 1][cell.col - 1];
+
+  if (top && top.mine) minesAround++;
+  if (topRight && topRight.mine) minesAround++;
+  if (right && right.mine) minesAround++;
+  if (bottomRight && bottomRight.mine) minesAround++;
+  if (bottom && bottom.mine) minesAround++;
+  if (bottomLeft && bottomLeft.mine) minesAround++;
+  if (left && left.mine) minesAround++;
+  if (topLeft && topLeft.mine) minesAround++;
+  return minesAround;
+}
+
+const generateBoard = (size: Size) => {
+  const emptyBoardWithMines = generateEmptyBoardWithMines(size);
+  return emptyBoardWithMines.map(row =>
+    row.map(cell => ({
+      ...cell,
+      minesAround: calculateMinesAround(emptyBoardWithMines, cell)
+    }))
+  );
 }
 
 const getSizes = (): { [key: string]: Size } => ({
@@ -26,7 +72,7 @@ const App: React.FC = () => {
   const size = getSizes().small;
   return (
     <AppStyled>
-      <Board board={generateCells(size)} size={size} />
+      <Board board={generateBoard(size)} size={size} />
     </AppStyled>
   );
 }
