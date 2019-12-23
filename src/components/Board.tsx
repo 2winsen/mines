@@ -3,18 +3,25 @@ import BoardCell from './BoardCell/BoardCell';
 import { Cell } from '../types/Cell';
 import styled from 'styled-components';
 import { Size } from '../types/Size';
+import { Game } from '../types/Game';
+import If from './If';
 
 interface Props {
   board: Cell[][];
   size: Size;
   onCellClick: (cell: Cell) => void;
   onCellRightClick: (cell: Cell) => void;
+  game: Game;
 }
 
-const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick }) => {
+const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, game }) => {
   const maxDimension = size.rows > size.columns ? size.rows : size.columns;
+
   return (
     <BoardStyled>
+      <If condition={game.lost || game.won}>
+        <Overlay />
+      </If>
       {board.map((row, ri) =>
         <RowStyled key={ri}>
           {row.map((cell, ci) =>
@@ -45,6 +52,7 @@ const BoardStyled = styled.div`
   border-left: 5px solid #7B7B7B;
   box-sizing: border-box;
   background-color: #BDBDBD;  
+  position: relative;
 `;
 
 const RowStyled = styled.div`
@@ -53,6 +61,13 @@ const RowStyled = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
 `;
 
 export default Board;
