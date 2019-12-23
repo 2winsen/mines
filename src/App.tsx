@@ -3,7 +3,7 @@ import Board from './components/Board';
 import { Size } from './types/Size';
 import { Cell } from './types/Cell';
 import styled from 'styled-components';
-import { generateEmptyBoard, isLost, isNewBoard, addMines, showCell, nextCellHiddenState } from './services/boardUtils';
+import { generateEmptyBoard, isLost, isNewBoard, addMines, showCell, nextCellHiddenState, isWon } from './services/boardUtils';
 import { Game } from './types/Game';
 
 const SIZES = {
@@ -17,6 +17,8 @@ const updatedGame = (board: Cell[][], game: Game): Game => {
   const updated = { ...game };
   if (isLost(board)) {
     updated.lost = true;
+  } else if (isWon(board)) {
+    updated.won = true;
   }
   return updated;
 }
@@ -33,6 +35,15 @@ const App: React.FC = () => {
   useEffect(() => {
     setGame(game => updatedGame(board, game));
   }, [board]);
+
+  useEffect(() => {
+    if (game.lost) {
+      alert('YOU LOST');
+    }
+    if (game.won) {
+      alert('Congratulations. YOU WON :)');
+    }
+  }, [game]);
 
   const handleCellClick = (cell: Cell) => {
     setBoard(board => {

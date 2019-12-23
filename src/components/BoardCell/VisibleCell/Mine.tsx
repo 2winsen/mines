@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ReactComponent as MineIcon } from '../../assets/images/mine.svg';
-import { Cell } from '../../types/Cell';
+import { ReactComponent as MineIcon } from '../../../assets/images/mine.svg';
+import { Cell } from '../../../types/Cell';
 
 interface Props {
   cell: Cell;
@@ -10,7 +10,7 @@ interface Props {
 const Mine: React.FC<Props> = ({ cell }) => {
   return (
     <MineContainer className={cell.state === 'EXPLODED' ? 'exploded' : ''}>
-      <MineStyled />
+      <MineIconStyled />
     </MineContainer>
   );
 }
@@ -26,7 +26,7 @@ const MineContainer = styled.div`
   }
 `;
 
-const MineStyled = styled(MineIcon)`
+const MineIconStyled = styled(MineIcon)`
   width: 60%;
   height: 60%; 
 `;

@@ -156,8 +156,15 @@ export const addMines = (size: Size, board: Cell[][], cell: Cell): Cell[][] => {
   }));
 }
 
-export const isNewBoard = (board: Cell[][]) => board.every(row => row.every(c => c.state === 'HIDDEN'));
+export const isNewBoard = (board: Cell[][]) => board.every(row => row.every(c => Cell.isAnyHiddenState(c)));
 export const isLost = (board: Cell[][]) => board.some(row => row.some(c => c.state === 'EXPLODED'));
+export const isWon = (board: Cell[][]) => board.every(row => row.every(c => {
+  if (c.mine) {
+    return c.state === 'FLAGGED';
+  } else {
+    return c.state === 'OPENED';
+  }
+}));
 
 export const generateEmptyBoard = (size: Size): Cell[][] => {
   return arr(size.rows).map((_, ri) =>
