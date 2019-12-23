@@ -21,7 +21,7 @@ const MineContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  &.exploded {
+    &.exploded {
     background-color: #FF0000;
   }
 `;

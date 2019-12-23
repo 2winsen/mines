@@ -1,4 +1,4 @@
-import { Cell } from '../types/Cell';
+import { Cell, CellState } from '../types/Cell';
 import { Size } from '../types/Size';
 import { rand, indicesAsTuples, tupleAsIndex, arr } from './utils';
 
@@ -77,8 +77,12 @@ const getCellsAroundEmptyCells = (board: Cell[][], emptyCells: Cell[]) => {
   }, [] as Cell[]);
 }
 
-const opened = (cell: Cell): Cell => ({ ...cell, state: 'OPENED' });
-const exploded = (cell: Cell): Cell => ({ ...cell, state: 'EXPLODED' });
+const changeState = (cell: Cell, state: CellState): Cell => ({ ...cell, state });
+const opened = (cell: Cell): Cell => changeState(cell, 'OPENED');
+const exploded = (cell: Cell): Cell => changeState(cell, 'EXPLODED');
+const flagged = (cell: Cell): Cell => changeState(cell, 'FLAGGED');
+const questioned = (cell: Cell): Cell => changeState(cell, 'QUESTIONED');
+const hidden = (cell: Cell): Cell => changeState(cell, 'HIDDEN');
 
 const showMultipleCells = (board: Cell[][], cell: Cell) => {
   const emptyCells = getEmptyCells(board, cell);
@@ -92,10 +96,10 @@ const showMultipleCells = (board: Cell[][], cell: Cell) => {
   });
 }
 
-const showSingleCell = (board: Cell[][], cell: Cell) => {
+const toggleSingleCell = (board: Cell[][], cell: Cell, fn: (cell: Cell) => Cell): Cell[][] => {
   return mapCell(board, c => {
     if (equalCells(c, cell)) {
-      return opened(c);
+      return fn(c);
     }
     return c;
   });
@@ -113,17 +117,30 @@ const showMines = (board: Cell[][], cell: Cell) => {
   });
 }
 
-export const showCell = (board: Cell[][], cell: Cell) => {
+export const showCell = (board: Cell[][], cell: Cell): Cell[][] => {
   if (cell.mine) {
     return showMines(board, cell)
   }
   if (cell.minesAround === 0) {
     return showMultipleCells(board, cell)
   }
-  return showSingleCell(board, cell)
+  return toggleSingleCell(board, cell, opened);
 }
 
-export const addMines = (size: Size, board: Cell[][], cell: Cell) => {
+export const nextCellHiddenState = (board: Cell[][], cell: Cell): Cell[][] => {
+  switch (cell.state) {
+    case 'HIDDEN':
+      return toggleSingleCell(board, cell, flagged);
+    case 'FLAGGED':
+      return toggleSingleCell(board, cell, questioned);
+    case 'QUESTIONED':
+      return toggleSingleCell(board, cell, hidden);
+    default:
+      return board;
+  }
+};
+
+export const addMines = (size: Size, board: Cell[][], cell: Cell): Cell[][] => {
   const exceptionCells = [cell, ...getCellsAround(cell, board)]
   const mines = generateMines(size, exceptionCells);
   const boardWithMines = mapCell(board, c => {

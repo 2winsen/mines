@@ -3,7 +3,7 @@ import Board from './components/Board';
 import { Size } from './types/Size';
 import { Cell } from './types/Cell';
 import styled from 'styled-components';
-import { generateEmptyBoard, isLost, isNewBoard, addMines, showCell } from './services/boardUtils';
+import { generateEmptyBoard, isLost, isNewBoard, addMines, showCell, nextCellHiddenState } from './services/boardUtils';
 import { Game } from './types/Game';
 
 const SIZES = {
@@ -44,7 +44,7 @@ const App: React.FC = () => {
   }
 
   const handleCellRightClick = (cell: Cell) => {
-    console.log('bbbbbbbbbbbbbbbbbb');
+    setBoard(b => nextCellHiddenState(b, cell));
   }
 
   return (

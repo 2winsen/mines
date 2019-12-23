@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Cell } from '../../types/Cell';
 import If from '../If';
 import Mine from './Mine';
-import Number from './Numer';
+import Number from './Number';
 
 interface Props {
   cell: Cell;
