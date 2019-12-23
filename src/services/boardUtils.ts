@@ -77,13 +77,16 @@ const getCellsAroundEmptyCells = (board: Cell[][], emptyCells: Cell[]) => {
   }, [] as Cell[]);
 }
 
+const opened = (cell: Cell): Cell => ({ ...cell, state: 'OPENED' });
+const exploded = (cell: Cell): Cell => ({ ...cell, state: 'EXPLODED' });
+
 const showMultipleCells = (board: Cell[][], cell: Cell) => {
   const emptyCells = getEmptyCells(board, cell);
   const aroundEmptyCells = getCellsAroundEmptyCells(board, emptyCells);
   const cellsToShow = [...emptyCells, ...aroundEmptyCells];
   return mapCell(board, c => {
     if (cellsToShow.find(cellToShow => equalCells(c, cellToShow))) {
-      return { ...c, visible: true };
+      return opened(c);
     }
     return c;
   });
@@ -92,7 +95,7 @@ const showMultipleCells = (board: Cell[][], cell: Cell) => {
 const showSingleCell = (board: Cell[][], cell: Cell) => {
   return mapCell(board, c => {
     if (equalCells(c, cell)) {
-      return { ...c, visible: true };
+      return opened(c);
     }
     return c;
   });
@@ -100,8 +103,11 @@ const showSingleCell = (board: Cell[][], cell: Cell) => {
 
 const showMines = (board: Cell[][], cell: Cell) => {
   return mapCell(board, c => {
+    if (equalCells(c, cell)) {
+      return exploded(c);
+    }
     if (c.mine) {
-      return { ...c, visible: true };
+      return opened(c);
     }
     return c;
   });
@@ -133,19 +139,10 @@ export const addMines = (size: Size, board: Cell[][], cell: Cell) => {
   }));
 }
 
-export const isNewBoard = (board: Cell[][]) => board.every(row => row.every(c => !c.visible));
-export const isLost = (board: Cell[][]) => board.some(row => row.some(c => c.visible && c.mine));
+export const isNewBoard = (board: Cell[][]) => board.every(row => row.every(c => c.state === 'HIDDEN'));
+export const isLost = (board: Cell[][]) => board.some(row => row.some(c => c.state === 'EXPLODED'));
 
 export const generateEmptyBoard = (size: Size): Cell[][] => {
   return arr(size.rows).map((_, ri) =>
-    arr(size.columns).map((_, ci) => {
-      const cell: Cell = {
-        row: ri,
-        col: ci,
-        minesAround: 0,
-        mine: false,
-        visible: false,
-      };
-      return cell;
-    }));
+    arr(size.columns).map((_, ci) => Cell.emptyCell(ri, ci)));
 }

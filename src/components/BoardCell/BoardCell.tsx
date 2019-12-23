@@ -22,13 +22,13 @@ const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, on
 
   return (
     <CellStyled maxDimension={maxDimension} onClick={() => onClick(cell)} onContextMenu={handleOnContextMenu}>
-      <If condition={!cell.visible}>
+      <If condition={Cell.isAnyHiddenState(cell)}>
         <Hidden />
       </If>
-      <If condition={cell.visible}>
+      <If condition={Cell.isAnyOpenedState(cell)}>
         <VisibleWrapper className="wrapper" firstCol={firstCol} firstRow={firstRow}>
           {cell.mine
-            ? <Mine />
+            ? <Mine cell={cell} />
             : <Number minesAround={cell.minesAround} />
           }
         </VisibleWrapper>
@@ -50,8 +50,8 @@ const size = css`
 
 const VisibleWrapper = styled.div<Pick<Props, 'firstCol' | 'firstRow'>>`
   ${size}
-  border-left: ${p => p.firstCol ? '0' : '1px solid #7B7B7B'};
-  border-top: ${p => p.firstRow ? '0' : '1px solid #7B7B7B'}; 
+  border-left: ${p => p.firstCol ? '0' : '3px solid #7B7B7B'};
+  border-top: ${p => p.firstRow ? '0' : '3px solid #7B7B7B'}; 
   display: flex;
   flex-direction: column;
   justify-content: center;
