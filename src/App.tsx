@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Board from './components/Board';
 import { Size } from './types/Size';
 import { Cell } from './types/Cell';
@@ -45,18 +45,22 @@ const App: React.FC = () => {
     }
   }, [game]);
 
-  const handleCellClick = (cell: Cell) => {
+  const handleCellClick = useCallback((cell: Cell) => {
+    if (Cell.isAnyOpenedState(cell)) {
+      return;
+    }
+
     setBoard(board => {
       const b = isNewBoard(board)
         ? addMines(size, board, cell)
         : board;
       return showCell(b, cell)
     });
-  }
+  }, [size])
 
-  const handleCellRightClick = (cell: Cell) => {
+  const handleCellRightClick = useCallback((cell: Cell) => {
     setBoard(b => nextCellHiddenState(b, cell));
-  }
+  }, [])
 
   return (
     <AppStyled>

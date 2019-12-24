@@ -15,13 +15,21 @@ interface Props {
 }
 
 const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, onClick, onRightClick }) => {
-  const handleOnContextMenu = (e: MouseEvent) => {
+  const handleContextMenu = (e: MouseEvent) => {
     e.preventDefault();
-    onRightClick(cell)
+    onRightClick(cell);
+  }
+
+  const handleClick = (e: MouseEvent) => {   
+    onClick(cell);
   }
 
   return (
-    <CellStyled maxDimension={maxDimension} onClick={() => onClick(cell)} onContextMenu={handleOnContextMenu}>
+    <CellStyled 
+      maxDimension={maxDimension}
+      onClick={handleClick}
+      onContextMenu={handleContextMenu}
+    >
       <If condition={Cell.isAnyHiddenState(cell)}>
         <HiddenCell
           cell={cell}
@@ -44,4 +52,4 @@ const CellStyled = styled.div<{ maxDimension: number }>`
   height: ${p => `calc(90vmin / ${p.maxDimension})`};
 `;
 
-export default BoardCell;
+export default React.memo(BoardCell);
