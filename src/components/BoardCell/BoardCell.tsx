@@ -21,7 +21,9 @@ const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, on
   }
 
   const handleClick = (e: MouseEvent) => {   
-    onClick(cell);
+    if (cell.state === 'HIDDEN') {
+      onClick(cell);
+    }
   }
 
   return (

@@ -89,7 +89,7 @@ const showMultipleCells = (board: Cell[][], cell: Cell) => {
   const aroundEmptyCells = getCellsAroundEmptyCells(board, emptyCells);
   const cellsToShow = [...emptyCells, ...aroundEmptyCells];
   return mapCell(board, c => {
-    if (cellsToShow.find(cellToShow => equalCells(c, cellToShow))) {
+    if (c.state === 'HIDDEN' && cellsToShow.find(cellToShow => equalCells(c, cellToShow))) {
       return opened(c);
     }
     return c;
