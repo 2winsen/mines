@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import styled from 'styled-components';
 import { Cell } from '../../types/Cell';
 import If from '../If';
@@ -12,24 +12,63 @@ interface Props {
   firstCol: boolean;
   onClick: (cell: Cell) => void;
   onRightClick: (cell: Cell) => void;
+  onBothClick: (cell: Cell) => void;
 }
 
-const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, onClick, onRightClick }) => {
-  const handleContextMenu = (e: MouseEvent) => {
-    e.preventDefault();
-    onRightClick(cell);
+const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, onClick, onRightClick, onBothClick }) => {
+  const [leftClicked, setLeftClicked] = useState(false);
+  const [rightClicked, setRightClicked] = useState(false);
+
+  const reset = () => {
+    setRightClicked(false);
+    setLeftClicked(false);
   }
 
-  const handleClick = (e: MouseEvent) => {   
+  const handleBothClick = () => {
+    onBothClick(cell);
+  }
+
+  const handleLeftClick = () => {
     if (cell.state === 'HIDDEN') {
       onClick(cell);
     }
   }
 
+  const handleRightClick = () => {
+    onRightClick(cell);
+  }
+
+  const checkClick = () => {
+    if (rightClicked && leftClicked) {
+      handleBothClick()
+    } else if (leftClicked) {
+      handleLeftClick()
+    } else if (rightClicked) {
+      handleRightClick()
+    }
+    reset();
+  }
+
+  const handleContextMenu = (e: MouseEvent) => {
+    e.preventDefault();
+    checkClick();
+  }
+
+  const handleClick = () => checkClick();  
+
+  const handleMouseDown = (e: MouseEvent) => {
+    if (e.nativeEvent.which === 1) {
+      setLeftClicked(true);
+    } else if (e.nativeEvent.which === 3) {
+      setRightClicked(true);
+    };
+  }
+
   return (
-    <CellStyled 
+    <CellStyled
       maxDimension={maxDimension}
       onClick={handleClick}
+      onMouseDown={handleMouseDown}
       onContextMenu={handleContextMenu}
     >
       <If condition={Cell.isAnyHiddenState(cell)}>

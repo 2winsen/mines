@@ -84,7 +84,7 @@ const flagged = (cell: Cell): Cell => changeState(cell, 'FLAGGED');
 const questioned = (cell: Cell): Cell => changeState(cell, 'QUESTIONED');
 const hidden = (cell: Cell): Cell => changeState(cell, 'HIDDEN');
 
-const showMultipleCells = (board: Cell[][], cell: Cell) => {
+const showEmptyCellsAround = (board: Cell[][], cell: Cell) => {
   const emptyCells = getEmptyCells(board, cell);
   const aroundEmptyCells = getCellsAroundEmptyCells(board, emptyCells);
   const cellsToShow = [...emptyCells, ...aroundEmptyCells];
@@ -110,24 +110,52 @@ const showMines = (board: Cell[][], cell: Cell) => {
     if (equalCells(c, cell)) {
       return exploded(c);
     }
-    if (c.mine) {
+    if (isMine(c)) {
       return opened(c);
     }
     return c;
   });
 }
 
-export const showCell = (board: Cell[][], cell: Cell): Cell[][] => {
-  if (cell.mine) {
-    return showMines(board, cell)
+export const showCells = (board: Cell[][], cells: Cell[]): Cell[][] => {
+  let updatedBoard = [...board];
+  for (let i = 0; i < cells.length; i++) {
+    const cell = cells[i];
+    if (cell.mine) {
+      return showMines(board, cell)
+    }
+    if (cell.minesAround === 0) {
+      updatedBoard = showEmptyCellsAround(updatedBoard, cell)
+    }
+    updatedBoard = toggleSingleCell(updatedBoard, cell, opened);
   }
-  if (cell.minesAround === 0) {
-    return showMultipleCells(board, cell)
-  }
-  return toggleSingleCell(board, cell, opened);
+  return updatedBoard;
 }
 
-export const nextCellHiddenState = (board: Cell[][], cell: Cell): Cell[][] => {
+const getMarkedMinesAround = (cell: Cell, board: Cell[][]) => {
+  return getCellsAround(cell, board).reduce((acc, curr) => {
+    if (curr.state === 'FLAGGED') {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
+}
+
+const isFlaggedMine = (cell: Cell) => cell.mine && cell.state === 'FLAGGED';
+const isMine = (cell: Cell) => cell.mine && cell.state !== 'FLAGGED';
+
+export const showCellsAround = (board: Cell[][], cell: Cell): Cell[][] => {
+  const around = getCellsAround(cell, board)
+    .filter(c => !isFlaggedMine(c));
+  const markedMines = getMarkedMinesAround(cell, board);
+  const isAllMinesOpened = markedMines === cell.minesAround;
+  if (isAllMinesOpened) {
+    return showCells(board, around);
+  }
+  return board;
+}
+
+export const cellNextHiddenState = (board: Cell[][], cell: Cell): Cell[][] => {
   switch (cell.state) {
     case 'HIDDEN':
       return toggleSingleCell(board, cell, flagged);

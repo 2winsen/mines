@@ -3,7 +3,7 @@ import Board from './components/Board';
 import { Size } from './types/Size';
 import { Cell } from './types/Cell';
 import styled from 'styled-components';
-import { generateEmptyBoard, isLost, isNewBoard, addMines, showCell, nextCellHiddenState, isWon } from './services/boardUtils';
+import { generateEmptyBoard, isLost, isNewBoard, addMines, showCells, cellNextHiddenState, isWon, showCellsAround } from './services/boardUtils';
 import { Game } from './types/Game';
 
 const SIZES = {
@@ -54,12 +54,16 @@ const App: React.FC = () => {
       const b = isNewBoard(board)
         ? addMines(size, board, cell)
         : board;
-      return showCell(b, cell)
+      return showCells(b, [cell])
     });
   }, [size])
 
   const handleCellRightClick = useCallback((cell: Cell) => {
-    setBoard(b => nextCellHiddenState(b, cell));
+    setBoard(b => cellNextHiddenState(b, cell));
+  }, [])
+
+  const handleCellBothClick = useCallback((cell: Cell) => {
+    setBoard(b => showCellsAround(b, cell));
   }, [])
 
   return (
@@ -69,6 +73,7 @@ const App: React.FC = () => {
         size={size}
         onCellClick={handleCellClick}
         onCellRightClick={handleCellRightClick}
+        onCellBothClick={handleCellBothClick}
         game={game}
       />
     </AppStyled>

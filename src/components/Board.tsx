@@ -11,10 +11,11 @@ interface Props {
   size: Size;
   onCellClick: (cell: Cell) => void;
   onCellRightClick: (cell: Cell) => void;
+  onCellBothClick: (cell: Cell) => void;
   game: Game;
 }
 
-const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, game }) => {
+const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, onCellBothClick, game }) => {
   const maxDimension = size.rows > size.columns ? size.rows : size.columns;
 
   return (
@@ -33,6 +34,7 @@ const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, ga
               firstRow={ri === 0}
               onClick={onCellClick}
               onRightClick={onCellRightClick}
+              onBothClick={onCellBothClick}
             />
           )}
         </RowStyled>
