@@ -10,7 +10,7 @@ const SIZES = {
   beginner: { rows: 9, columns: 9, mines: 10 },
   intermediate: { rows: 16, columns: 16, mines: 40 },
   expert: { rows: 16, columns: 30, mines: 99 },
-  test: { rows: 4, columns: 5, mines: 10 },
+  test: { rows: 5, columns: 5, mines: 3 },
 };
 
 const updatedGame = (board: Cell[][], game: Game): Game => {
@@ -24,7 +24,7 @@ const updatedGame = (board: Cell[][], game: Game): Game => {
 }
 
 const App: React.FC = () => {
-  const [size] = useState<Size>(SIZES.beginner);
+  const [size] = useState<Size>(SIZES.test);
   const [board, setBoard] = useState<Cell[][]>(generateEmptyBoard(size));
   const [game, setGame] = useState<Game>({
     lost: false,
@@ -38,10 +38,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (game.lost) {
-      alert('YOU LOST');
+      console.log('LOST');
     }
     if (game.won) {
-      alert('Congratulations. YOU WON :)');
+      console.log('WON');
     }
   }, [game]);
 
@@ -49,7 +49,6 @@ const App: React.FC = () => {
     if (Cell.isAnyOpenedState(cell)) {
       return;
     }
-
     setBoard(board => {
       const b = isNewBoard(board)
         ? addMines(size, board, cell)
@@ -63,7 +62,11 @@ const App: React.FC = () => {
   }, [])
 
   const handleCellBothClick = useCallback((cell: Cell) => {
-    setBoard(b => showCellsAround(b, cell));
+    setBoard(board => {
+      return !isNewBoard(board)
+        ? showCellsAround(board, cell)
+        : board
+    });
   }, [])
 
   return (

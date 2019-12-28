@@ -21,7 +21,7 @@ const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, on
   return (
     <BoardStyled>
       <If condition={game.lost || game.won}>
-        <Overlay />
+        <Overlay onContextMenu={e => e.preventDefault()} />
       </If>
       {board.map((row, ri) =>
         <RowStyled key={ri}>

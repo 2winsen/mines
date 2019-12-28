@@ -1,4 +1,4 @@
-import { rand, arr, indicesAsTuples, tupleAsIndex } from './utils';
+import { rand, arr } from './utils';
 
 describe('arr', () => {
   it('should create array of size', () => {
@@ -24,36 +24,5 @@ describe('rand', () => {
       expect(rand(min, max)).toBeGreaterThanOrEqual(min);
       expect(rand(min, max)).toBeLessThanOrEqual(max);
     }
-  })
-});
-
-describe('indicesAsTuples', () => {
-  it('should create correct tuples for small set', () => {
-    const cols = 3
-    const indices = [0, 1, 2, 3, 4, 5]
-    const target = indicesAsTuples(indices, cols);
-    expect(target).toEqual([
-      [0, 0], [0, 1], [0, 2],
-      [1, 0], [1, 1], [1, 2],
-    ]);
-  })
-
-  it('should create correct tuples for small set', () => {
-    const cols = 5
-    const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-    const target = indicesAsTuples(indices, cols);
-    expect(target).toEqual([
-      [0, 0], [0, 1], [0, 2], [0, 3], [0, 4],
-      [1, 0], [1, 1], [1, 2], [1, 3], [1, 4],
-      [2, 0], [2, 1], [2, 2], [2, 3], [2, 4]
-    ]);
-  })
-});
-
-describe('tupleAsIndex', () => {
-  it('should create correct index', () => {
-    const cols = 5
-    expect(tupleAsIndex([0, 3], cols)).toEqual(3);
-    expect(tupleAsIndex([1, 4], cols)).toEqual(9);
   })
 });

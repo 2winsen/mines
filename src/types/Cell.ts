@@ -27,3 +27,5 @@ export class Cell {
     public minesAround: number,
   ) { }
 }
+
+export type CellCoords = Pick<Cell, 'col' | 'row'>;

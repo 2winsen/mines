@@ -1,18 +1,23 @@
-import { Cell, CellState } from '../types/Cell';
+import { Cell, CellState, CellCoords } from '../types/Cell';
 import { Size } from '../types/Size';
-import { rand, indicesAsTuples, tupleAsIndex, arr } from './utils';
+import { rand, arr } from './utils';
 
-const generateMines = (size: Size, exceptionCells: Cell[]): [number, number][] => {
-  const mines = new Set<number>();
-  const exceptionCellIndices = exceptionCells.map(c => tupleAsIndex([c.row, c.col], size.columns));
-  while (mines.size < size.mines) {
-    const mineIndex = rand(0, (size.rows * size.columns) - 1);
-    if (exceptionCellIndices.find(i => i === mineIndex)) {
-      continue;
+const equalCells = (cell1: CellCoords, cell2: CellCoords) => cell1.row === cell2.row && cell1.col === cell2.col;
+const existsCell = (cell: CellCoords, cells: CellCoords[]) => Boolean(cells.find(c => equalCells(c, cell)));
+
+const generateMines = (size: Size, exceptionCells: Cell[]): CellCoords[] => {
+  const mines = [];
+  while (mines.length < size.mines) {
+    const randRow = rand(0, size.rows - 1);
+    const randCol = rand(0, size.columns - 1);
+    const newMine: CellCoords = { row: randRow, col: randCol };
+    const unique = !existsCell(newMine, mines);
+    const notAtExceptionCells = !existsCell(newMine, exceptionCells);
+    if (unique && notAtExceptionCells) {
+      mines.push(newMine);
     }
-    mines.add(mineIndex);
   }
-  return indicesAsTuples(Array.from(mines), size.columns);
+  return mines;
 };
 
 const getCellsAround = (cell: Cell, board: Cell[][]) => {
@@ -27,8 +32,6 @@ const getCellsAround = (cell: Cell, board: Cell[][]) => {
   return [top, topRight, right, bottomRight, bottom, bottomLeft, left, topLeft]
     .filter(x => !!x)
 }
-
-const equalCells = (cell1: Cell, cell2: Cell) => cell1.row === cell2.row && cell1.col === cell2.col;
 
 const calculateMinesAround = (cell: Cell, board: Cell[][]) => {
   if (cell.mine) {
@@ -89,7 +92,7 @@ const showEmptyCellsAround = (board: Cell[][], cell: Cell) => {
   const aroundEmptyCells = getCellsAroundEmptyCells(board, emptyCells);
   const cellsToShow = [...emptyCells, ...aroundEmptyCells];
   return mapCell(board, c => {
-    if (c.state === 'HIDDEN' && cellsToShow.find(cellToShow => equalCells(c, cellToShow))) {
+    if (c.state === 'HIDDEN' && existsCell(c, cellsToShow)) {
       return opened(c);
     }
     return c;
@@ -174,7 +177,7 @@ export const addMines = (size: Size, board: Cell[][], cell: Cell): Cell[][] => {
   const boardWithMines = mapCell(board, c => {
     return {
       ...c,
-      mine: Boolean(mines.find(([mineRow, mineCol]) => mineRow === c.row && mineCol === c.col)),
+      mine: existsCell(c, mines),
       minesAround: -1
     }
   });
