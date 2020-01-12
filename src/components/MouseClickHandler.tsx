@@ -4,10 +4,9 @@ interface Props {
   onLeftClick: () => void;
   onRightClick: () => void;
   onBothClick: () => void;
-  maxDimension: number;
 }
 
-const MouseClickHandler: React.FC<Props> = ({ children, onLeftClick, onRightClick, onBothClick, maxDimension, ...rest }) => {
+const MouseClickHandler: React.FC<Props> = ({ children, onLeftClick, onRightClick, onBothClick, ...rest }) => {
   const [leftClicked, setLeftClicked] = useState(false);
   const [rightClicked, setRightClicked] = useState(false);
 

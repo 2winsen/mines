@@ -8,7 +8,6 @@ import MouseClickHandler from '../MouseClickHandler';
 
 interface Props {
   cell: Cell;
-  maxDimension: number;
   firstRow: boolean;
   firstCol: boolean;
   onClick: (cell: Cell) => void;
@@ -16,12 +15,12 @@ interface Props {
   onBothClick: (cell: Cell) => void;
 }
 
-const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, onClick, onRightClick, onBothClick }) => {
+const BoardCell: React.FC<Props> = ({ cell, firstCol, firstRow, onClick, onRightClick, onBothClick }) => {
   const handleBothClick = () => {
     onBothClick(cell);
   }
 
-  const handleLeftClick = () => { 
+  const handleLeftClick = () => {
     if (cell.state === 'HIDDEN') {
       onClick(cell);
     }
@@ -33,7 +32,6 @@ const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, on
 
   return (
     <MouseClickHandlerStyled
-      maxDimension={maxDimension}
       onLeftClick={handleLeftClick}
       onRightClick={handleRightClick}
       onBothClick={handleBothClick}
@@ -54,10 +52,13 @@ const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, on
   );
 }
 
-const MouseClickHandlerStyled = styled(MouseClickHandler)<{ maxDimension: number }>`
+const MouseClickHandlerStyled = styled(MouseClickHandler)`
   display: flex;
   width: 40px;
   height: 40px;
 `;
 
-export default React.memo(BoardCell);
+const areEqual = (prevProps: Props, nextProps: Props) => {
+  return prevProps.cell.state === nextProps.cell.state;
+};
+export default React.memo(BoardCell, areEqual);

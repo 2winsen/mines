@@ -120,10 +120,14 @@ const showMines = (board: Cell[][], cell: Cell) => {
   });
 }
 
-export const showCells = (board: Cell[][], cells: Cell[]): Cell[][] => {
+const getBoardCell = (board: Cell[][], coords: CellCoords) => {
+  return board[coords.row][coords.col];
+}
+
+export const showCells = (board: Cell[][], cells: CellCoords[]): Cell[][] => {
   let updatedBoard = [...board];
   for (let i = 0; i < cells.length; i++) {
-    const cell = cells[i];
+    const cell = getBoardCell(board, cells[i]);
     if (cell.mine) {
       return showMines(board, cell)
     }

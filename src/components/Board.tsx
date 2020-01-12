@@ -16,8 +16,6 @@ interface Props {
 }
 
 const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, onCellBothClick, game }) => {
-  const maxDimension = size.rows > size.columns ? size.rows : size.columns;
-
   return (
     <BoardStyled>
       <If condition={game.lost || game.won}>
@@ -27,9 +25,8 @@ const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, on
         <RowStyled key={ri}>
           {row.map((cell, ci) =>
             <BoardCell
-              key={ci}
+              key={`${ri}_${ci}`}
               cell={cell}
-              maxDimension={maxDimension}
               firstCol={ci === 0}
               firstRow={ri === 0}
               onClick={onCellClick}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Board from './components/Board';
 import { Size } from './types/Size';
-import { Cell } from './types/Cell';
+import { Cell, CellCoords } from './types/Cell';
 import styled from 'styled-components';
 import { generateEmptyBoard, isLost, isNewBoard, addMines, showCells, cellNextHiddenState, isWon, showCellsAround } from './services/boardUtils';
 import { Game } from './types/Game';
@@ -10,21 +10,20 @@ const SIZES = {
   beginner: { rows: 9, columns: 9, mines: 10 },
   intermediate: { rows: 16, columns: 16, mines: 40 },
   expert: { rows: 16, columns: 30, mines: 99 },
-  test: { rows: 50, columns: 50, mines: 300 },
+  test: { rows: 50, columns: 50, mines: 200 },
 };
 
 const updatedGame = (board: Cell[][], game: Game): Game => {
-  const updated = { ...game };
   if (isLost(board)) {
-    updated.lost = true;
+    return { ...game, lost: true };
   } else if (isWon(board)) {
-    updated.won = true;
+    return { ...game, won: true };
   }
-  return updated;
+  return game;
 }
 
 const App: React.FC = () => {
-  const [size] = useState<Size>(SIZES.beginner);
+  const [size] = useState<Size>(SIZES.test);
   const [board, setBoard] = useState<Cell[][]>(generateEmptyBoard(size));
   const [game, setGame] = useState<Game>({
     lost: false,

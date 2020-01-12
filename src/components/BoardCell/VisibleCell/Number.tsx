@@ -17,6 +17,7 @@ const NumberStyled = styled.div`
   text-align: center;
   font-size: 35px;
   cursor: default;
+  user-select: none
   font-family: monospace;
   font-weight: bold;
   &.color1 {
