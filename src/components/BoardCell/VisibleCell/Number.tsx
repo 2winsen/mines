@@ -15,7 +15,8 @@ const Number: React.FC<Props> = ({ minesAround }) => {
 
 const NumberStyled = styled.div`
   text-align: center;
-  font-size: 8vmin;
+  font-size: 35px;
+  cursor: default;
   font-family: monospace;
   font-weight: bold;
   &.color1 {

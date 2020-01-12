@@ -41,7 +41,7 @@ const FlagIconStyled = styled(FlagIcon)`
 `;
 
 const QuestionIconStyled = styled.div`
-    font-size: 6vmin;
+    font-size: 25px;
     font-family: sans-serif;
     font-weight: bold;
 `;

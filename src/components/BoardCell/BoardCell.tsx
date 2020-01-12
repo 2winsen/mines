@@ -56,8 +56,8 @@ const BoardCell: React.FC<Props> = ({ cell, maxDimension, firstCol, firstRow, on
 
 const MouseClickHandlerStyled = styled(MouseClickHandler)<{ maxDimension: number }>`
   display: flex;
-  width: ${p => `calc(90vmin / ${p.maxDimension})`};
-  height: ${p => `calc(90vmin / ${p.maxDimension})`};
+  width: 40px;
+  height: 40px;
 `;
 
 export default React.memo(BoardCell);

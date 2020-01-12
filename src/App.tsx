@@ -10,7 +10,7 @@ const SIZES = {
   beginner: { rows: 9, columns: 9, mines: 10 },
   intermediate: { rows: 16, columns: 16, mines: 40 },
   expert: { rows: 16, columns: 30, mines: 99 },
-  test: { rows: 5, columns: 5, mines: 3 },
+  test: { rows: 50, columns: 50, mines: 300 },
 };
 
 const updatedGame = (board: Cell[][], game: Game): Game => {
@@ -24,7 +24,7 @@ const updatedGame = (board: Cell[][], game: Game): Game => {
 }
 
 const App: React.FC = () => {
-  const [size] = useState<Size>(SIZES.test);
+  const [size] = useState<Size>(SIZES.beginner);
   const [board, setBoard] = useState<Cell[][]>(generateEmptyBoard(size));
   const [game, setGame] = useState<Game>({
     lost: false,
