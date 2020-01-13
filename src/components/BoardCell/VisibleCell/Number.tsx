@@ -7,7 +7,7 @@ interface Props {
 
 const Number: React.FC<Props> = ({ minesAround }) => {
   return (
-    <NumberStyled className={`color${minesAround}`}>
+    <NumberStyled className={`color${minesAround} text`}>
       {minesAround === 0 ? '' : minesAround}
     </NumberStyled>
   )
@@ -16,9 +16,6 @@ const Number: React.FC<Props> = ({ minesAround }) => {
 const NumberStyled = styled.div`
   text-align: center;
   font-size: 35px;
-  cursor: default;
-  user-select: none
-  font-family: monospace;
   font-weight: bold;
   &.color1 {
     color: #0000FF;

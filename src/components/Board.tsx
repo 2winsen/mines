@@ -15,9 +15,11 @@ interface Props {
   game: Game;
 }
 
-const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, onCellBothClick, game }) => {
+const Board: React.FC<Props> = ({ board, onCellClick, onCellRightClick, onCellBothClick, game }) => {
   return (
-    <BoardStyled>
+    <BoardStyled
+      onDragStart={(e) => e.preventDefault()}
+      onDrag={(e) => e.preventDefault()}>
       <If condition={game.lost || game.won}>
         <Overlay onContextMenu={e => e.preventDefault()} />
       </If>
@@ -27,8 +29,6 @@ const Board: React.FC<Props> = ({ board, size, onCellClick, onCellRightClick, on
             <BoardCell
               key={`${ri}_${ci}`}
               cell={cell}
-              firstCol={ci === 0}
-              firstRow={ri === 0}
               onClick={onCellClick}
               onRightClick={onCellRightClick}
               onBothClick={onCellBothClick}

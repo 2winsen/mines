@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import If from '../../If';
 import { Cell } from '../../../types/Cell';
 import { ReactComponent as FlagIcon } from '../../../assets/images/flag.svg';
+import { cellBorders } from '../VisibleCell/VisibleCell';
 
 interface Props {
   cell: Cell;
@@ -15,7 +16,7 @@ const HiddenCell: React.FC<Props> = ({ cell }) => {
         <FlagIconStyled />
       </If>
       <If condition={cell.state === 'QUESTIONED'}>
-        <QuestionIconStyled>?</QuestionIconStyled>
+        <QuestionIconStyled className="text">?</QuestionIconStyled>
       </If>
     </HiddenStyled>
   );
@@ -33,6 +34,11 @@ const HiddenStyled = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  &:active {
+    ${cellBorders}
+    border-right: 0; 
+    border-bottom: 0;     
+  }
 `;
 
 const FlagIconStyled = styled(FlagIcon)`
@@ -44,6 +50,7 @@ const QuestionIconStyled = styled.div`
     font-size: 25px;
     font-family: sans-serif;
     font-weight: bold;
+    cursor: default;
 `;
 
 export default HiddenCell;

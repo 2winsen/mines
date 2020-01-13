@@ -5,17 +5,18 @@ import If from '../If';
 import VisibleCell from './VisibleCell/VisibleCell';
 import HiddenCell from './HiddenCell/HiddenCell';
 import MouseClickHandler from '../MouseClickHandler';
+import useLongTouch from '../../services/useLongTouch';
 
 interface Props {
   cell: Cell;
-  firstRow: boolean;
-  firstCol: boolean;
   onClick: (cell: Cell) => void;
   onRightClick: (cell: Cell) => void;
   onBothClick: (cell: Cell) => void;
 }
 
-const BoardCell: React.FC<Props> = ({ cell, firstCol, firstRow, onClick, onRightClick, onBothClick }) => {
+const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }) => {
+  
+
   const handleBothClick = () => {
     onBothClick(cell);
   }
@@ -30,11 +31,23 @@ const BoardCell: React.FC<Props> = ({ cell, firstCol, firstRow, onClick, onRight
     onRightClick(cell);
   }
 
+  const handleTouch = () => {
+    if (Cell.isAnyOpenedState(cell)) {
+      handleBothClick()
+    }
+    if (Cell.isAnyHiddenState(cell)) {
+      handleRightClick();
+    }
+  }
+
+  const backspaceLongPress = useLongTouch(handleTouch, 700);
+
   return (
     <MouseClickHandlerStyled
       onLeftClick={handleLeftClick}
       onRightClick={handleRightClick}
       onBothClick={handleBothClick}
+      {...backspaceLongPress}
     >
       <If condition={Cell.isAnyHiddenState(cell)}>
         <HiddenCell
@@ -43,8 +56,6 @@ const BoardCell: React.FC<Props> = ({ cell, firstCol, firstRow, onClick, onRight
       </If>
       <If condition={Cell.isAnyOpenedState(cell)}>
         <VisibleCell
-          firstCol={firstCol}
-          firstRow={firstRow}
           cell={cell}
         />
       </If>
