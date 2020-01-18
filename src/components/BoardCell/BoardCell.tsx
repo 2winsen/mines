@@ -15,7 +15,7 @@ interface Props {
 }
 
 const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }) => {
-  
+
 
   const handleBothClick = () => {
     onBothClick(cell);
@@ -70,6 +70,9 @@ const MouseClickHandlerStyled = styled(MouseClickHandler)`
 `;
 
 const areEqual = (prevProps: Props, nextProps: Props) => {
-  return prevProps.cell.state === nextProps.cell.state;
+  return prevProps.cell.state === nextProps.cell.state
+    && prevProps.onClick === nextProps.onClick
+    && prevProps.onRightClick === nextProps.onRightClick
+    && prevProps.onBothClick === nextProps.onBothClick;
 };
 export default React.memo(BoardCell, areEqual);

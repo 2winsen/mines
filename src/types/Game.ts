@@ -1,7 +1,15 @@
-import { Size } from './Size';
+export type GameState = 'WON' | 'LOST' | 'NEW' | 'IN_PROCESS';
 
-export interface Game {
-  lost: boolean;
-  won: boolean;
-  minesLeft: number;
+export class Game {
+  static newGame(minesLeft: number): Game {
+    return {
+      state: 'NEW',
+      minesLeft,
+    }
+  }
+
+  constructor(
+    public state: GameState,
+    public minesLeft: number
+  ) { }
 }

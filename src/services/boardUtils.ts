@@ -1,6 +1,7 @@
 import { Cell, CellState, CellCoords } from '../types/Cell';
 import { Size } from '../types/Size';
 import { rand, arr } from './utils';
+import { Game, GameState } from '../types/Game';
 
 const equalCells = (cell1: CellCoords, cell2: CellCoords) => cell1.row === cell2.row && cell1.col === cell2.col;
 const existsCell = (cell: CellCoords, cells: CellCoords[]) => Boolean(cells.find(c => equalCells(c, cell)));
@@ -191,15 +192,63 @@ export const addMines = (size: Size, board: Cell[][], cell: Cell): Cell[][] => {
   }));
 }
 
-export const isNewBoard = (board: Cell[][]) => board.every(row => row.every(c => Cell.isAnyHiddenState(c)));
-export const isLost = (board: Cell[][]) => board.some(row => row.some(c => c.state === 'EXPLODED'));
-export const isWon = (board: Cell[][]) => board.every(row => row.every(c => {
-  if (c.mine) {
-    return c.state === 'FLAGGED';
-  } else {
-    return c.state === 'OPENED';
+export const updateGame = (size: Size, board: Cell[][]): Game => {
+  const cellsCount = size.rows * size.columns;
+  let hidden = 0;
+  let exploded = 0;
+  let flaggedOrOpened = 0;
+  let flagged = 0;
+  for (let rowIndex = 0; rowIndex < size.rows; rowIndex++) {
+    for (let colIndex = 0; colIndex < size.columns; colIndex++) {
+      const cell = board[rowIndex][colIndex];
+      if (Cell.isAnyHiddenState(cell)) {
+        hidden++;
+      }
+      if (cell.state === 'EXPLODED') {
+        exploded++;
+      }
+      if (cell.state === 'FLAGGED' || cell.state === 'OPENED') {
+        flaggedOrOpened++;
+      }
+      if (cell.state === 'FLAGGED') {
+        flagged++;
+      }
+    }
   }
-}));
+  let state: GameState;
+  if (hidden === cellsCount) {
+    state = 'NEW';
+  } else if (exploded > 0) {
+    state = 'LOST';
+  } else if (flaggedOrOpened === cellsCount) {
+    state = 'WON';
+  } else {
+    state = 'IN_PROCESS';
+  }
+
+  return {
+    state,
+    minesLeft: size.mines - flagged,
+  }
+}
+
+// export const isNewBoard = (board: Cell[][]) => board.every(row => row.every(c => Cell.isAnyHiddenState(c)));
+// export const isLost = (board: Cell[][]) => board.some(row => row.some(c => c.state === 'EXPLODED'));
+// export const isWon = (board: Cell[][]) => board.every(row => row.every(c => {
+//   if (c.mine) {
+//     return c.state === 'FLAGGED';
+//   } else {
+//     return c.state === 'OPENED';
+//   }
+// }));
+
+// export const calculateMinesLeft = (board: Cell[][]) => board.every(row => row.every(c => {
+//   if (c.mine) {
+//     return c.state === 'FLAGGED';
+//   } else {
+//     return c.state === 'OPENED';
+//   }
+// }));
 
 export const generateEmptyBoard = (size: Size): Cell[][] => {
   return arr(size.rows).map((_, ri) =>

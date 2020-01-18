@@ -20,7 +20,7 @@ const Board: React.FC<Props> = ({ board, onCellClick, onCellRightClick, onCellBo
     <BoardStyled
       onDragStart={(e) => e.preventDefault()}
       onDrag={(e) => e.preventDefault()}>
-      <If condition={game.lost || game.won}>
+      <If condition={game.state === 'WON' || game.state === 'LOST'}>
         <Overlay onContextMenu={e => e.preventDefault()} />
       </If>
       {board.map((row, ri) =>
@@ -37,6 +37,7 @@ const Board: React.FC<Props> = ({ board, onCellClick, onCellRightClick, onCellBo
         </RowStyled>
       )}
     </BoardStyled>
+
   )
 }
 

@@ -3,58 +3,46 @@ import Board from './components/Board';
 import { Size } from './types/Size';
 import { Cell } from './types/Cell';
 import styled from 'styled-components';
-import { generateEmptyBoard, isLost, isNewBoard, addMines, showCells, cellNextHiddenState, isWon, showCellsAround } from './services/boardUtils';
+import { generateEmptyBoard, addMines, showCells, cellNextHiddenState, showCellsAround, updateGame } from './services/boardUtils';
 import { Game } from './types/Game';
+import Controls from './components/Controls/Controls';
 
 const SIZES = {
   beginner: { rows: 9, columns: 9, mines: 10 },
   intermediate: { rows: 16, columns: 16, mines: 40 },
   expert: { rows: 16, columns: 30, mines: 99 },
-  test: { rows: 5, columns: 8, mines: 10 },
+  test: { rows: 5, columns: 8, mines: 9 },
 };
-
-const updatedGame = (board: Cell[][], game: Game): Game => {
-  if (isLost(board)) {
-    return { ...game, lost: true };
-  } else if (isWon(board)) {
-    return { ...game, won: true };
-  }
-  return game;
-}
 
 const App: React.FC = () => {
   const [size] = useState<Size>(SIZES.test);
-  const [board, setBoard] = useState<Cell[][]>(generateEmptyBoard(size));
-  const [game, setGame] = useState<Game>({
-    lost: false,
-    won: false,
-    minesLeft: size.mines,
-  })
+  const [board, setBoard] = useState<Cell[][]>(() => generateEmptyBoard(size));
+  const [game, setGame] = useState<Game>(() => Game.newGame(size.mines));
 
   useEffect(() => {
-    setGame(game => updatedGame(board, game));
-  }, [board]);
+    setGame(updateGame(size, board));
+  }, [board, size]);
 
   useEffect(() => {
-    if (game.lost) {
+    if (game.state === 'LOST') {
       console.log('LOST');
     }
-    if (game.won) {
+    if (game.state === 'WON') {
       console.log('WON');
     }
-  }, [game]);
+  }, [game.state]);
 
   const handleCellClick = useCallback((cell: Cell) => {
     if (Cell.isAnyOpenedState(cell)) {
       return;
     }
     setBoard(board => {
-      const b = isNewBoard(board)
+      const b = (game.state === 'NEW')
         ? addMines(size, board, cell)
         : board;
       return showCells(b, [cell])
-    });
-  }, [size])
+    })
+  }, [game.state, size])
 
   const handleCellRightClick = useCallback((cell: Cell) => {
     setBoard(b => cellNextHiddenState(b, cell));
@@ -62,32 +50,57 @@ const App: React.FC = () => {
 
   const handleCellBothClick = useCallback((cell: Cell) => {
     setBoard(board => {
-      return !isNewBoard(board)
+      return (game.state !== 'NEW')
         ? showCellsAround(board, cell)
         : board
     });
-  }, [])
+  }, [game.state])
+
+  const handleNewGame = useCallback(() => {
+    setBoard(generateEmptyBoard(size));
+    setGame(Game.newGame(size.mines));
+  }, [size])
 
   return (
     <AppStyled>
-      <Board
-        board={board}
-        size={size}
-        onCellClick={handleCellClick}
-        onCellRightClick={handleCellRightClick}
-        onCellBothClick={handleCellBothClick}
-        game={game}
-      />
+      <BorderOuter>
+        <BorderInner>
+          <Controls
+            onNewGame={handleNewGame}
+            game={game}
+          />
+          <Board
+            board={board}
+            size={size}
+            onCellClick={handleCellClick}
+            onCellRightClick={handleCellRightClick}
+            onCellBothClick={handleCellBothClick}
+            game={game}
+          />
+        </BorderInner>
+      </BorderOuter>
     </AppStyled>
   );
 }
 
 const AppStyled = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
   width: 100%;
+`;
+
+const BorderInner = styled.div`
+  border: 18px solid #BDBDBD;
+`;
+
+const BorderOuter = styled.div`
+  border-top: 3px solid #FFF;
+  border-right: 3px solid #7B7B7B;
+  border-bottom: 3px solid #7B7B7B;
+  border-left: 3px solid #FFF;
 `;
 
 export default App;
