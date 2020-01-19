@@ -15,7 +15,7 @@ const SIZES = {
 };
 
 const App: React.FC = () => {
-  const [size] = useState<Size>(SIZES.beginner);
+  const [size, setSize] = useState<Size>(SIZES.beginner);
   const [board, setBoard] = useState<Cell[][]>(() => generateEmptyBoard(size));
   const [game, setGame] = useState<Game>(() => Game.newGame(size.mines));
 
@@ -52,8 +52,19 @@ const App: React.FC = () => {
     setGame(Game.newGame(size.mines));
   }, [size])
 
-  return (
+  const handleNewSizeGame = useCallback((size: Size) => () => {
+    setSize(size);
+    setBoard(generateEmptyBoard(size));
+    setGame(Game.newGame(size.mines));
+  }, [])
+
+  return ( 
     <AppStyled>
+      <SizesContainer>
+        <AnchorButton onClick={handleNewSizeGame(SIZES.beginner)}>Beginner</AnchorButton>
+        <AnchorButton onClick={handleNewSizeGame(SIZES.intermediate)}>Intermediate</AnchorButton>
+        <AnchorButton onClick={handleNewSizeGame(SIZES.expert)}>Expert</AnchorButton>
+      </SizesContainer>
       <BorderOuter>
         <BorderInner>
           <Controls
@@ -79,8 +90,8 @@ const AppStyled = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
 `;
 
 const BorderInner = styled.div`
@@ -88,10 +99,26 @@ const BorderInner = styled.div`
 `;
 
 const BorderOuter = styled.div`
+  margin: 0 auto;
   border-top: 3px solid #FFF;
   border-right: 3px solid #7B7B7B;
   border-bottom: 3px solid #7B7B7B;
   border-left: 3px solid #FFF;
+`;
+
+const SizesContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+`;
+
+const AnchorButton = styled.button`
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  color: #0000FF;
+  cursor: pointer;
 `;
 
 export default App;

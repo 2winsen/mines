@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { cellSize } from '../../../services/constants';
 
 interface Props {
   minesAround: number;
@@ -15,7 +16,7 @@ const Number: React.FC<Props> = ({ minesAround }) => {
 
 const NumberStyled = styled.div`
   text-align: center;
-  font-size: 35px;
+  font-size: ${cellSize - 5}px;
   font-weight: bold;
   &.color1 {
     color: #0000FF;

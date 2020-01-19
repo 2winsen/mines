@@ -36,13 +36,13 @@ const Controls: React.FC<Props> = ({ onNewGame, game }) => {
   return (
     <BorderBottom>
       <ControlsStyled>
-        <NumberDisplay>{controlsFormat(game.minesLeft)}</NumberDisplay>
+        <NumberDisplay className="text">{controlsFormat(game.minesLeft)}</NumberDisplay>
         <StyledButton onClick={onNewGame}>
           <SvgIconContainer>
             {renderSmileIcon()}
           </SvgIconContainer>
         </StyledButton>
-        <NumberDisplay>
+        <NumberDisplay className="text">
           <TimeControl state={game.state} />
         </NumberDisplay>
       </ControlsStyled>

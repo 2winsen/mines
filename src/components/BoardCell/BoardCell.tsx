@@ -6,6 +6,7 @@ import VisibleCell from './VisibleCell/VisibleCell';
 import HiddenCell from './HiddenCell/HiddenCell';
 import MouseClickHandler from '../MouseClickHandler';
 import useLongTouch from '../../services/useLongTouch';
+import { cellSize } from '../../services/constants';
 
 interface Props {
   cell: Cell;
@@ -22,6 +23,8 @@ const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }
   const handleLeftClick = () => {
     if (cell.state === 'HIDDEN') {
       onClick(cell);
+    } else if (cell.state === 'OPENED') {
+      onBothClick(cell);
     }
   }
 
@@ -31,14 +34,14 @@ const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }
 
   const handleTouch = () => {
     if (Cell.isAnyOpenedState(cell)) {
-      handleBothClick()
+      handleBothClick();
     }
     if (Cell.isAnyHiddenState(cell)) {
       handleRightClick();
     }
   }
 
-  const backspaceLongPress = useLongTouch(handleTouch, 700);
+  const backspaceLongPress = useLongTouch(handleTouch);
 
   return (
     <MouseClickHandlerStyled
@@ -63,8 +66,8 @@ const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }
 
 const MouseClickHandlerStyled = styled(MouseClickHandler)`
   display: flex;
-  width: 40px;
-  height: 40px;
+  width: ${cellSize}px;
+  height: ${cellSize}px;;
 `;
 
 const areEqual = (prevProps: Props, nextProps: Props) => {
