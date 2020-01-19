@@ -87,6 +87,7 @@ const exploded = (cell: Cell): Cell => changeState(cell, 'EXPLODED');
 const flagged = (cell: Cell): Cell => changeState(cell, 'FLAGGED');
 const questioned = (cell: Cell): Cell => changeState(cell, 'QUESTIONED');
 const hidden = (cell: Cell): Cell => changeState(cell, 'HIDDEN');
+const flaggedWrong = (cell: Cell): Cell => changeState(cell, 'FLAGGED_WRONG');
 
 const showEmptyCellsAround = (board: Cell[][], cell: Cell) => {
   const emptyCells = getEmptyCells(board, cell);
@@ -114,7 +115,10 @@ const showMines = (board: Cell[][], cell: Cell) => {
     if (equalCells(c, cell)) {
       return exploded(c);
     }
-    if (isMine(c)) {
+    if (!c.mine && c.state === 'FLAGGED') {
+      return flaggedWrong(c);
+    }
+    if (c.mine && c.state !== 'FLAGGED') {
       return opened(c);
     }
     return c;
@@ -130,6 +134,7 @@ export const showCells = (board: Cell[][], cells: CellCoords[]): Cell[][] => {
   for (let i = 0; i < cells.length; i++) {
     const cell = getBoardCell(board, cells[i]);
     if (cell.mine) {
+      // GAME IS LOST
       return showMines(board, cell)
     }
     if (cell.minesAround === 0) {
@@ -150,7 +155,6 @@ const getMarkedMinesAround = (cell: Cell, board: Cell[][]) => {
 }
 
 const isFlaggedMine = (cell: Cell) => cell.mine && cell.state === 'FLAGGED';
-const isMine = (cell: Cell) => cell.mine && cell.state !== 'FLAGGED';
 
 export const showCellsAround = (board: Cell[][], cell: Cell): Cell[][] => {
   const around = getCellsAround(cell, board)
@@ -196,7 +200,8 @@ export const updateGame = (size: Size, board: Cell[][]): Game => {
   const cellsCount = size.rows * size.columns;
   let hidden = 0;
   let exploded = 0;
-  let flaggedOrOpened = 0;
+  let opened = 0;
+  let flaggedCorrectly = 0;
   let flagged = 0;
   for (let rowIndex = 0; rowIndex < size.rows; rowIndex++) {
     for (let colIndex = 0; colIndex < size.columns; colIndex++) {
@@ -207,20 +212,24 @@ export const updateGame = (size: Size, board: Cell[][]): Game => {
       if (cell.state === 'EXPLODED') {
         exploded++;
       }
-      if (cell.state === 'FLAGGED' || cell.state === 'OPENED') {
-        flaggedOrOpened++;
+      if (cell.state === 'OPENED') {
+        opened++;
       }
       if (cell.state === 'FLAGGED') {
+        if (cell.mine) {
+          flaggedCorrectly++;
+        }
         flagged++;
       }
     }
   }
+  const wonCondition = flaggedCorrectly === size.mines && opened === cellsCount - size.mines;
   let state: GameState;
   if (hidden === cellsCount) {
     state = 'NEW';
   } else if (exploded > 0) {
     state = 'LOST';
-  } else if (flaggedOrOpened === cellsCount) {
+  } else if (wonCondition) {
     state = 'WON';
   } else {
     state = 'IN_PROCESS';

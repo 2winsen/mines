@@ -11,26 +11,17 @@ const SIZES = {
   beginner: { rows: 9, columns: 9, mines: 10 },
   intermediate: { rows: 16, columns: 16, mines: 40 },
   expert: { rows: 16, columns: 30, mines: 99 },
-  test: { rows: 5, columns: 8, mines: 9 },
+  test: { rows: 3, columns: 3, mines: 2 },
 };
 
 const App: React.FC = () => {
-  const [size] = useState<Size>(SIZES.test);
+  const [size] = useState<Size>(SIZES.beginner);
   const [board, setBoard] = useState<Cell[][]>(() => generateEmptyBoard(size));
   const [game, setGame] = useState<Game>(() => Game.newGame(size.mines));
 
   useEffect(() => {
     setGame(updateGame(size, board));
   }, [board, size]);
-
-  useEffect(() => {
-    if (game.state === 'LOST') {
-      console.log('LOST');
-    }
-    if (game.state === 'WON') {
-      console.log('WON');
-    }
-  }, [game.state]);
 
   const handleCellClick = useCallback((cell: Cell) => {
     if (Cell.isAnyOpenedState(cell)) {

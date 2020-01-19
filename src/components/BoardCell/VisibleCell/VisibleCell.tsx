@@ -3,18 +3,32 @@ import styled, { css } from 'styled-components';
 import { Cell } from '../../../types/Cell';
 import Mine from './Mine';
 import Number from './Number';
+import { ReactComponent as MineWrongIcon } from '../../../assets/images/mine-wrong.svg';
 
 interface Props {
   cell: Cell;
 }
 
 const VisibleCell: React.FC<Props> = ({ cell }) => {
+  const renderCell = () => {
+    if (cell.state === 'FLAGGED_WRONG') {
+      return (
+        <FlaggedWrong>
+          <MineWrongIcon />
+        </FlaggedWrong>
+      )
+    }
+    if (cell.mine) {
+      return <Mine cell={cell} />;
+    } else {
+      return <Number minesAround={cell.minesAround} />;
+    }
+  }
+
+
   return (
     <VisibleCellStyled>
-      {cell.mine
-        ? <Mine cell={cell} />
-        : <Number minesAround={cell.minesAround} />
-      }
+      {renderCell()}
     </VisibleCellStyled>
   );
 }
@@ -33,6 +47,16 @@ const VisibleCellStyled = styled.div`
   width: 100%;
   height: 100%; 
   box-sizing: border-box;
+`;
+
+const FlaggedWrong = styled.div`  
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  & svg {
+    width: 25px;
+    height: 25px;
+  }
 `;
 
 export default VisibleCell;

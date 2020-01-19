@@ -15,8 +15,6 @@ interface Props {
 }
 
 const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }) => {
-
-
   const handleBothClick = () => {
     onBothClick(cell);
   }

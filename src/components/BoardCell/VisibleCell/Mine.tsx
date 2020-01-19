@@ -27,8 +27,8 @@ const MineContainer = styled.div`
 `;
 
 const MineIconStyled = styled(MineIcon)`
-  width: 60%;
-  height: 60%; 
+  width: 25px;
+  height: 25px;
 `;
 
 export default Mine;

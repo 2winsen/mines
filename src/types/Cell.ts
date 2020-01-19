@@ -1,8 +1,8 @@
-export type CellState = 'OPENED' | 'EXPLODED' | 'HIDDEN' | 'FLAGGED' | 'QUESTIONED';
+export type CellState = 'OPENED' | 'EXPLODED' | 'HIDDEN' | 'FLAGGED' | 'QUESTIONED' | 'FLAGGED_WRONG';
 
 export class Cell {
   static isAnyOpenedState(cell: Cell): boolean {
-    return cell.state === 'OPENED' || cell.state === 'EXPLODED';
+    return cell.state === 'OPENED' || cell.state === 'EXPLODED' ||  cell.state === 'FLAGGED_WRONG';
   }
 
   static isAnyHiddenState(cell: Cell): boolean {

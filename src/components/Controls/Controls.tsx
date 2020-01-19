@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ReactComponent as SmileIcon } from '../../assets/images/smile.svg';
 import { ReactComponent as SmileLostIcon } from '../../assets/images/smile-lost.svg';
+import { ReactComponent as SmileWonIcon } from '../../assets/images/smile-won.svg';
 import { Game } from '../../types/Game';
 import TimeControl from './TimeControl';
 
@@ -21,13 +22,24 @@ export const controlsFormat = (value: number): string => {
 }
 
 const Controls: React.FC<Props> = ({ onNewGame, game }) => {
+  const renderSmileIcon = () => {
+    switch (game.state) {
+      case 'WON':
+        return <SmileWonIcon />;
+      case 'LOST':
+        return <SmileLostIcon />;
+      default:
+        return <SmileIcon />;
+    }
+  }
+
   return (
     <BorderBottom>
       <ControlsStyled>
         <NumberDisplay>{controlsFormat(game.minesLeft)}</NumberDisplay>
         <StyledButton onClick={onNewGame}>
           <SvgIconContainer>
-            {game.state !== 'LOST' ? <SmileIcon /> : <SmileLostIcon />}
+            {renderSmileIcon()}
           </SvgIconContainer>
         </StyledButton>
         <NumberDisplay>
@@ -74,9 +86,6 @@ const StyledButton = styled.button`
   border-left: 5px solid #FFF;
   width: 60px;
   height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &:active {
     border: 4px solid #7B7B7B;
@@ -84,6 +93,11 @@ const StyledButton = styled.button`
 `;
 
 const SvgIconContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   & svg {
     width: 40px;
     height: 40px; 
