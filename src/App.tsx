@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { generateEmptyBoard, addMines, showCells, cellNextHiddenState, showCellsAround, updateGame } from './services/boardUtils';
 import { Game } from './types/Game';
 import Controls from './components/Controls/Controls';
+import Sidebar from './components/Sidebar';
 
 const SIZES = {
   beginner: { rows: 9, columns: 9, mines: 10 },
@@ -52,19 +53,24 @@ const App: React.FC = () => {
     setGame(Game.newGame(size.mines));
   }, [size])
 
-  const handleNewSizeGame = useCallback((size: Size) => () => {
-    setSize(size);
-    setBoard(generateEmptyBoard(size));
-    setGame(Game.newGame(size.mines));
-  }, [])
+  const handleMenuChange = (menuItem: string) => {
+    const handleNewGame = (size: Size) => {
+      setSize(size);
+      setBoard(generateEmptyBoard(size));
+      setGame(Game.newGame(size.mines));
+    }
+    switch (menuItem.toLocaleUpperCase()) {
+      case 'BEGINNER':
+        return handleNewGame(SIZES.beginner);
+      case 'INTERMEDIATE':
+        return handleNewGame(SIZES.intermediate);
+      case 'EXPERT':
+        return handleNewGame(SIZES.expert);
+    }
+  }
 
-  return ( 
+  return (
     <AppStyled>
-      <SizesContainer>
-        <AnchorButton onClick={handleNewSizeGame(SIZES.beginner)}>Beginner</AnchorButton>
-        <AnchorButton onClick={handleNewSizeGame(SIZES.intermediate)}>Intermediate</AnchorButton>
-        <AnchorButton onClick={handleNewSizeGame(SIZES.expert)}>Expert</AnchorButton>
-      </SizesContainer>
       <BorderOuter>
         <BorderInner>
           <Controls
@@ -81,6 +87,7 @@ const App: React.FC = () => {
           />
         </BorderInner>
       </BorderOuter>
+      <Sidebar onChange={handleMenuChange} />
     </AppStyled>
   );
 }
@@ -104,21 +111,6 @@ const BorderOuter = styled.div`
   border-right: 3px solid #7B7B7B;
   border-bottom: 3px solid #7B7B7B;
   border-left: 3px solid #FFF;
-`;
-
-const SizesContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  width: 100%;
-`;
-
-const AnchorButton = styled.button`
-  background: none!important;
-  border: none;
-  padding: 0!important;
-  color: #0000FF;
-  cursor: pointer;
 `;
 
 export default App;
