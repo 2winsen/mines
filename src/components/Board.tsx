@@ -37,7 +37,6 @@ const Board: React.FC<Props> = ({ board, onCellClick, onCellRightClick, onCellBo
         </RowStyled>
       )}
     </BoardStyled>
-
   )
 }
 
@@ -53,6 +52,7 @@ const BoardStyled = styled.div`
   box-sizing: border-box;
   background-color: #BDBDBD;  
   position: relative;
+  touch-action: none;
 `;
 
 const RowStyled = styled.div`
