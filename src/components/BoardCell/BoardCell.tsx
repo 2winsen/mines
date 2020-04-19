@@ -7,6 +7,7 @@ import HiddenCell from './HiddenCell/HiddenCell';
 import MouseClickHandler from '../MouseClickHandler';
 import useLongTouch from '../../services/useLongTouch';
 import { cellSize } from '../../services/constants';
+import { setMultiTouchLockedCell, isMultiTouchLocked } from './BoardCellHelper';
 
 interface Props {
   cell: Cell;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }) => {
+
   const handleBothClick = () => {
     onBothClick(cell);
   }
@@ -32,7 +34,7 @@ const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }
     onRightClick(cell);
   }
 
-  const handleTouch = () => {
+  const handleLongTouch = () => {
     if (Cell.isAnyOpenedState(cell)) {
       handleBothClick();
     }
@@ -41,14 +43,29 @@ const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }
     }
   }
 
-  const backspaceLongPress = useLongTouch(handleTouch);
+  const { onTouchStart, onTouchEnd } = useLongTouch(handleLongTouch);
+
+  const handleTouchStart = () => {
+    if (isMultiTouchLocked(cell)) {
+      return;
+    }
+    onTouchStart();
+    // Due to performance reasons not using React state
+    setMultiTouchLockedCell(cell);
+  }
+
+  const handleTouchEnd = () => {
+    onTouchEnd();
+    setMultiTouchLockedCell(undefined);
+  }
 
   return (
     <MouseClickHandlerStyled
       onLeftClick={handleLeftClick}
       onRightClick={handleRightClick}
       onBothClick={handleBothClick}
-      {...backspaceLongPress}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <If condition={Cell.isAnyHiddenState(cell)}>
         <HiddenCell
@@ -67,7 +84,7 @@ const BoardCell: React.FC<Props> = ({ cell, onClick, onRightClick, onBothClick }
 const MouseClickHandlerStyled = styled(MouseClickHandler)`
   display: flex;
   width: ${cellSize}px;
-  height: ${cellSize}px;;
+  height: ${cellSize}px;
 `;
 
 const areEqual = (prevProps: Props, nextProps: Props) => {

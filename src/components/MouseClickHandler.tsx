@@ -1,6 +1,6 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useState, DOMAttributes } from 'react';
 
-interface Props {
+interface Props extends DOMAttributes<HTMLDivElement> {
   onLeftClick: () => void;
   onRightClick: () => void;
   onBothClick: () => void;

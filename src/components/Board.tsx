@@ -52,7 +52,7 @@ const BoardStyled = styled.div`
   box-sizing: border-box;
   background-color: #BDBDBD;  
   position: relative;
-  touch-action: none;
+  touch-action: manipulation;
 `;
 
 const RowStyled = styled.div`

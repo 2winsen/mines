@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function useLongTouch(callback = () => {}, ms = 300) {
+export default function useLongTouch(callback = () => {}, ms = 200) {
   const [startLongPress, setStartLongPress] = useState(false);
 
   useEffect(() => {
