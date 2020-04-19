@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "./static/css/main.d7472716.chunk.css",
+    "main.js": "./static/js/main.d5e3cd05.chunk.js",
+    "main.js.map": "./static/js/main.d5e3cd05.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.123387cc.js",
+    "runtime-main.js.map": "./static/js/runtime-main.123387cc.js.map",
+    "static/js/2.12618ca4.chunk.js": "./static/js/2.12618ca4.chunk.js",
+    "static/js/2.12618ca4.chunk.js.map": "./static/js/2.12618ca4.chunk.js.map",
+    "index.html": "./index.html",
+    "precache-manifest.f7b7dcdf1fda0ad75a536262eaaaad28.js": "./precache-manifest.f7b7dcdf1fda0ad75a536262eaaaad28.js",
+    "service-worker.js": "./service-worker.js",
+    "static/css/main.d7472716.chunk.css.map": "./static/css/main.d7472716.chunk.css.map",
+    "static/js/2.12618ca4.chunk.js.LICENSE": "./static/js/2.12618ca4.chunk.js.LICENSE",
+    "static/media/flag.fc12b71f.svg": "./static/media/flag.fc12b71f.svg",
+    "static/media/hamburger.86595150.svg": "./static/media/hamburger.86595150.svg",
+    "static/media/mine-wrong.f459666c.svg": "./static/media/mine-wrong.f459666c.svg",
+    "static/media/mine.e3d5f918.svg": "./static/media/mine.e3d5f918.svg",
+    "static/media/smile-lost.b3545bac.svg": "./static/media/smile-lost.b3545bac.svg",
+    "static/media/smile-won.aadfd8ca.svg": "./static/media/smile-won.aadfd8ca.svg",
+    "static/media/smile.dfb86436.svg": "./static/media/smile.dfb86436.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.123387cc.js",
+    "static/js/2.12618ca4.chunk.js",
+    "static/css/main.d7472716.chunk.css",
+    "static/js/main.d5e3cd05.chunk.js"
+  ]
+}
