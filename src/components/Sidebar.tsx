@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import If from './If';
 import { ReactComponent as HamburgerIcon } from '../assets/images/hamburger.svg';
+import { version } from '../../package.json';
 
 interface Props {
   onChange: (menuItem: string) => void;
@@ -18,8 +19,8 @@ const Sidebar: React.FC<Props> = ({ onChange }) => {
     <>
       <HamburgerIconStyled onClick={() => setOpened(true)} />
       <SidebarWrapper className={opened ? 'opened' : ''}>
-        <nav>
-          <ul>
+        <nav style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <ul style={{ flex: 1 }}>
             <MenuItem>
               <AnchorButton onClick={() => handleMenuItemClick('Beginner')}>Beginner</AnchorButton>
             </MenuItem>
@@ -29,6 +30,9 @@ const Sidebar: React.FC<Props> = ({ onChange }) => {
             <MenuItem>
               <AnchorButton onClick={() => handleMenuItemClick('Expert')}>Expert</AnchorButton>
             </MenuItem>
+          </ul>
+          <ul style={{ flex: 0 }}>
+            <MenuItem>{version}</MenuItem>
           </ul>
         </nav>
       </SidebarWrapper>
